@@ -1,0 +1,22 @@
+class users(db.Model) :
+    id = db.Column(db.Integer, primary_key = True)
+    first_name = db.Column(db.String(50), nullable = False )
+    last_name = db.Column(db.String(50), nullable = False )
+    email_id = db.Column(db.String(50), nullable = False )
+
+    def __repr__(self) -> str: 
+        return f"{self.id} - {self.first_name} - {self.last_name}"
+
+class roles(db.Model) :
+    id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False )
+    user_role = db.Column(db.String(50), nullable = False )
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self) -> str: 
+        return f"{self.id} - {self.user_id} - {self.user_role}"
+
+
+@app.route('/')
+def homepage():
+    return render_template("base.html")

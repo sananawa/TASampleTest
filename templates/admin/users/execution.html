@@ -1,0 +1,308 @@
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}Execution{% endblock %}
+{% block body %}
+
+<!--
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+-->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/executionform-style.css') }}" >
+
+<style>
+    .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+            flex: auto;
+    }
+        
+    .nav-tabs .nav-link {
+            flex: auto;
+    }
+
+    label {
+        font-family: Georgia, "Times New Roman", Times, serif;
+        font-size: 18px;
+        color: #333;
+        text-align: right;
+        float:left;
+    }
+    
+    select,input {
+        border: 1px solid #000;
+    }
+
+    .rounded-5 {
+        border-radius: 0.5rem!important;
+    }
+
+</style>
+<script>
+     
+    var newSomeDataList = '{{ testPlanlist }}';
+	newSomeDataList = newSomeDataList.replaceAll("&#39;" , "");
+    newSomeDataList = newSomeDataList.replaceAll("}" , "");
+    const someDataList = Object.fromEntries(newSomeDataList.split(',').map(i => i.split(':')));
+
+    function setOption() 
+    {
+        $('#testPlanlistd').empty();
+        let select = document.querySelectorAll("#application")[0];
+        var str= select.options[select.selectedIndex].text;
+        
+        $.each( someDataList, function(key, value) {   
+            if( value.includes(str )){
+            $('#testPlanlistd')
+                .append($("<option></option>")
+                            .attr("value", key)
+                            .text(value)); 
+            }
+        });
+        
+    };   
+
+    $(document).ready(function() {
+    $('body').bootstrapMaterialDesign();
+    
+    
+});
+</script>
+
+
+<div class="intro-header">
+    <div class="container">
+    </br>
+        <div class="row">
+            
+            <div class="col-lg-12 border rounded-5">
+                <form id="releaseform" action="{{ url_for('admin.startExecution' ) }}" method="POST">
+                    </br>
+                    <table class="table">
+                        <tbody>            
+                        <tr>
+                            
+                            <td class="col w-30">
+                                <label for="application" class="form-label">Select Application: </label>
+                                <select id="application", class="form-select", onChange="setOption()" name="applicationList">
+                                    <option value="" selected="selected">Please select Application</option>
+                                    {% for key, value in appList.items() %}
+                                    <option value="{{ value }}">{{ key}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        
+                            <td class="col w-70">
+                                <label for="testPlanlistd" class="form-label">Choose The Test Plan: </label>
+                                <select class="form-select" id="testPlanlistd" name="testPlanlistd">
+                                    <option value="" selected="selected">Please select Application</option>
+                                   
+                                </select>
+                            </td>
+
+                            
+                        </tr>
+                        
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div> 
+        
+    </br>    
+        <div class="row">
+            <div class="border rounded-5">   
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                      <button {% if pageType == "execution" %} class="nav-link active" {% else %} class="nav-link" {% endif %}  id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Execution</button>
+                      <button {% if pageType == "checkstatus" %} class="nav-link active" {% else %} class="nav-link" {% endif %}  id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">StatusCheck</button>
+                      <button {% if pageType == "runsettings" %} class="nav-link active" {% else %} class="nav-link" {% endif %}  id="nav-runsettings-tab" data-bs-toggle="tab" data-bs-target="#nav-runsettings" type="button" role="tab" aria-controls="nav-runsettings" aria-selected="false">RunSettings</button>
+                      <button {% if pageType == "testdata" %} class="nav-link active" {% else %} class="nav-link" {% endif %}  id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">TestData</button>
+                    </div>
+                  
+                </br> 
+                    <div class="tab-content" id="nav-tabContent">
+                        {% if pageType == "execution" %}
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        {% else %}
+                        <div class="tab-pane fade" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        {% endif %}
+                            
+                                {{ utils.flashed_messages() }}
+                                
+                        
+                                <table class="table">
+                                    <tbody>            
+                                    <tr>
+                                        
+                                        <td class="col w-100">
+                                            {% if release_data is defined %}
+                                            <label for="releaseform" class="form-label"> Release Id   : </label>
+                                            <input readonly for="releaseform" type="text" name="release_data_id" value="{{ release_data.id }}">
+                                            
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    <td class="col w-100" align="center">
+                                        <button type="submit" form="releaseform" class="btn btn-primary btn-sm">Start Run</button>
+                                    </td>
+                            </tr>
+                        
+                        </tbody>
+                    </table>
+                        </div>
+                        {% if pageType == "checkstatus" %}
+                        <div class="tab-pane fade  show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        {% else %}
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        {% endif %}
+                            
+                                
+                                
+                                <form id="ckeckrelease" action="{{ url_for('admin.checkExecution' ) }}" method="POST">
+                                    {% if release_data is defined %}
+                                    <table class="table table-bordered">
+                                        <tbody>            
+                                        <tr>
+                                            
+                                            <td colspan="2" class="col w-20">
+                                                <label for="ckeckrelease" class="form-label"> Release Id   : </label>
+                                                <input readonly for="ckeckrelease" type="text" name="release_id" value="{{ release_data.id }}">
+                                            </td>
+                                        </tr> 
+                                        <tr>
+                                            <td class="col w-50">
+                                                {% if release_data.environments[0] is not none %}
+                                                <label for="sel1" class="form-label">Release Environment Name : {{ release_data.environments[0].name }}</label>
+                                                </br><label for="sel1" class="form-label">Release Environment Id   : {{ release_data.environments[0].id }}</label>
+                                            </br> <label for="sel1" class="form-label" > TestPlan Id:  {{ release_data.environments[0].deploy_phases_snapshot[0].workflowTasks[1].inputs.testPlan }} </label>
+                                        </br> <label for="sel1" class="form-label"> TestSuite Id:  {{ release_data.environments[0].deploy_phases_snapshot[0].workflowTasks[1].inputs.testSuite }} </label>
+                                        
+                                                    {% if release_data.environments[0].status == "rejected" %}
+                                                        </br><label for="sel1" class="form-label">Release Environment Status  : 
+                                                        <span class="badge bg-success text-wrap" ><B>Completed </B></span></label>
+                                                    {% else %}
+                                                        </br><label for="sel1" class="form-label">Release Environment Status  : 
+                                                        <span class="badge bg-info text-wrap" ><B> {{ release_data.environments[0].status }} </B></span></label>
+                                                    {% endif %}
+                                                {% else %}
+                                                <label for="sel1" class="form-label">Release is collecting data to start execution...</label>
+                                                {% endif %}
+                                            </td>
+
+                                            <td class="col w-50">
+                                                {% if release_data.environments[1] is not none %}
+                                                <label  class="form-label">Release Environment Name : {{ release_data.environments[1].name }}</label>
+                                                </br><label class="form-label">Release Environment Id   : {{ release_data.environments[1].id }}</label>
+                                                </br><label class="form-label" > TestPlan Id:  {{ release_data.environments[1].deploy_phases_snapshot[0].workflowTasks[0].inputs.testPlan }} </label>
+                                                </br><label class="form-label"> TestSuite Id:  {{ release_data.environments[1].deploy_phases_snapshot[0].workflowTasks[0].inputs.testSuite }} </label>
+                                        
+                                                    {% if release_data.environments[1].status == "rejected" %}
+                                                        </br><label for="sel1" class="form-label">Release Environment Status  : 
+                                                            <span class="badge bg-success text-wrap" ><B>Completed </B></span></label>
+                                                    {% else %}
+                                                        </br><label for="sel1" class="form-label">Release Environment Status  : 
+                                                            <span class="badge bg-info text-wrap" ><B> {{ release_data.environments[1].status }} </B></span></label>
+                                                    {% endif %}
+                                                {% else %}
+                                                <label for="sel1" class="form-label">Release is collecting data to start execution...</label>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" align="center">
+                                                <button type="submit" form="ckeckrelease" class="btn btn-primary btn-sm">Check Relese Status</button>
+                                            </td>
+                
+                                        </tr> 
+                                        </tbody>
+                                    </table>
+                                    {% endif %}
+                                </form>
+                                
+                                </br>
+                        </div>
+                        {% if pageType == "runsettings" %}
+                        <div class="tab-pane fade show active" id="nav-runsettings" role="tabpanel" aria-labelledby="nav-runsettings-tab">
+                        {% else %}
+                        <div class="tab-pane fade" id="nav-runsettings" role="tabpanel" aria-labelledby="nav-runsettings-tab">
+                        {% endif %}
+                            
+                        <form id="runsettings" action="{{ url_for('admin.checkExecution' ) }}" method="POST">
+                            {% if release_data is defined %}
+                            <table class="table table-bordered">
+                                <tbody>            
+                                <tr>
+                                    
+                                    <td colspan="2" class="col w-20">
+                                        <label for="ckeckrelease" class="form-label"> Release Id   : </label>
+                                        <input readonly for="ckeckrelease" type="text" name="release_id" value="{{ release_data.id }}">
+                                    </td>
+                                </tr> 
+                                <tr>
+                                    <td class="col w-50">
+                                        {% if release_data.environments[0] is not none %}
+                                        <label for="sel1" class="form-label">Release Environment Name : {{ release_data.environments[0].name }}</label>
+                                        </br><label for="sel1" class="form-label">Release Environment Id   : {{ release_data.environments[0].id }}</label>
+                                    </br> resultsFolder:  {{ release_data.environments[0].deploy_phases_snapshot[0].workflowTasks[1].inputs.resultsFolder }}
+                                </br> runSettingsFile:  {{ release_data.environments[0].deploy_phases_snapshot[0].workflowTasks[1].inputs.runSettingsFile }}   
+                                </br> runSettingsFile:  {{ release_data.environments[0].deploy_phases_snapshot[0].workflowTasks[1].inputs.overrideTestrunParameters }}   
+                                
+                                        {% else %}
+                                        <label for="sel1" class="form-label">Release is collecting data to start execution...</label>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="col w-50">
+                                        {% if release_data.environments[1] is not none %}
+                                        <label  class="form-label">Release Environment Name : {{ release_data.environments[1].name }}</label>
+                                        </br><label class="form-label">Release Environment Id   : {{ release_data.environments[1].id }}</label>
+                                    </br> resultsFolder:  {{ release_data.environments[1].deploy_phases_snapshot[0].workflowTasks[0].inputs.resultsFolder }}
+                                </br> runSettingsFile:  {{ release_data.environments[1].deploy_phases_snapshot[0].workflowTasks[0].inputs.runSettingsFile }}   
+                                </br> runSettingsFile:  {{ release_data.environments[1].deploy_phases_snapshot[0].workflowTasks[0].inputs.overrideTestrunParameters }}   
+                                
+                                            
+                                        {% else %}
+                                        <label for="sel1" class="form-label">Release is collecting data to start execution...</label>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" align="center">
+                                        <button type="submit" form="runsettings" class="btn btn-primary btn-sm">Check Relese Status</button>
+                                    </td>
+        
+                                </tr> 
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </form>
+                        
+                        </br>
+                                
+                                
+                        </div>
+
+                        {% if pageType == "testdata" %}
+                        <div class="tab-pane fade show active" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                        {% else %}
+                        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                        {% endif %}
+                            
+                                <h1>Test Data</h1>
+                                <hr class="intro-divider"></hr>  
+                                
+                                {% if release_data is defined %}
+                                    
+                                   
+                                    
+                                {% endif %}
+                            
+                        </div>
+                        
+                    </div>            
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

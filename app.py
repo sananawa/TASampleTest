@@ -1,5 +1,14 @@
 from flask import Flask, redirect, url_for, request, render_template
-app = Flask(__name__)
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from config import app_config
+
+config_name = "development"
+
+app = Flask(__name__, instance_relative_config=True )
+app.config.from_object(app_config[config_name])
+
+db = SQLAlchemy(app)
 
 @app.route('/')
 def loginpage():

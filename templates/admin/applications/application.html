@@ -1,0 +1,30 @@
+<!-- app/templates/admin/applications/application.html -->
+
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}
+    {% if add_application %}
+        Add Application
+    {% else %}
+        Edit Application
+    {% endif %}
+{% endblock %}
+{% block body %}
+<div class="content-section">
+ <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <div class="center">
+            {% if add_application %}
+                <h1>Add Application</h1>
+            {% else %}
+                <h1>Edit Application</h1>
+            {% endif %}
+            <br/>
+            {{ wtf.quick_form(form) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

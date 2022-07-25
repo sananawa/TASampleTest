@@ -1,0 +1,8 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "reports.html" %}
+{% block title %}
+    Report
+{% endblock %}
+{% block body %}
+    <iframe class="frame-border scroll-pane" src="{{ reportPath }}" frameborder="0"></iframe>
+{% endblock %}
