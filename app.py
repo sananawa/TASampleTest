@@ -13,20 +13,17 @@ db = SQLAlchemy(app)
 @app.route('/')
 def loginpage():
     return render_template("auth/login.html")
- 
-@app.route('/success/<name>')
-def success(name):
-    return render_template("base.html") 
-    
-@app.route('/login', methods=['POST', 'GET'])
+
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        user = request.form['nm']
-        return redirect(url_for('success', name=user))
-    else:
-        user = request.args.get('nm')
-        return redirect(url_for('success', name=user))
- 
+    user = request.form['user']
+    return render_template('home/homepage.html', title="Welcome " + user , user=user)
+
+@app.route('/homepage')
+def homepage():
+    user = "Sachin"
+    return render_template('home/homepage.html', title="Dashboard" , user=user)
+
  
 if __name__ == '__main__':
-    app.run(use_reloader = True,debug=True)
+    app.run(debug=True)
