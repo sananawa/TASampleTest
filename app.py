@@ -16,8 +16,8 @@ def loginpage():
  
 @app.route('/success/<name>')
 def success(name):
-    return 'welcome %s' % name
-  
+    return render_template("base.html") 
+    
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
